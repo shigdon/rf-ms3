@@ -1,0 +1,136 @@
+﻿PanGenome Reference,Gene ID,Prokka Annotation,Interproscan  Annotation,Pan-GWAS,RFC,RFR,Mucilage Isolate State,Class
+BCW-000270_02491,pspA,Phosphoserine phosphatase 1,Histidine Phosphatase,+,+,+,+,Amino Acid
+BCW-000212_00639,ddrA,Single-stranded DNA-binding protein DdrA,Rad52/22 family double-strand break repair protein,+,+,+,-,DNA Modification
+BCW-000270_02490,ybiR,Inner membrane protein YbiR,Citrate transporter,+,+,+,+,Transport
+BCW-200051_00576,btuD_9,Vitamin B12 import ATP-binding protein BtuD,ABC Transporter Type 1,+,+,+,+,Transport
+BCW-200077_01198,feuA,Iron-uptake system-binding protein,Iron siderophore periplasmic ABC transporter,+,+,+,+,Iron Transport
+BCW-000631_00940,group_7770,hypothetical protein,Prokaryotic membrane lipoprotein lipid attachment,+,+,+,+,Cell Wall
+BCW-000270_02495,group_2085,hypothetical protein,Glyoxalase/Bleomycin resistance protein/Dihydroxybiphenyl dioxygenase,+,+,+,+,Detoxification
+BCW-200051_00578,group_8190,hypothetical protein,"RGG_Cterm: transcriptional activator, Rgg/GadR/MutR family",+,+,+,+,Transcription Factor
+BCW-000270_01148,xylT_2,D-xylose transporter,"SP: MFS transporter, sugar porter (SP) family",+,+,+,+,Sugar Transport
+BCW-200051_01660,group_1791,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-200051_01186,group_5497,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000631_01709,group_696,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000212_01741,group_3301,hypothetical protein,WxL domain surface cell wall-binding,+,+,+,+,Cell Wall
+BCW-200051_01072,group_5487,hypothetical protein,Protein of unknown function DUF3892,+,+,+,+,Unknown
+BCW-000212_01260,group_1931,hypothetical protein,Intrinsically disordered protein,+,+,+,-,Disordered
+BCW-200077_00352,group_1793,hypothetical protein,Putative lactococcus lactis phage r1t holin,+,+,+,+,Phage
+BCW-000631_01693,group_5428,hypothetical protein,Winged helix/Mga helix-turn-helix DNA binding,+,+,+,+,DNA Modification
+BCW-200051_01663,group_2959,hypothetical protein,MepB-like Protein of Unknown Function,+,+,+,+,Unknown
+BCW-200051_00577,group_5483,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000270_02496,group_6294,hypothetical protein,"ROK (Repressor, ORF, Kinase) DNA-Binding Transcription Factor",+,+,+,+,Transcription Factor
+BCW-000270_01146,xylT_1,D-xylose transporter,"SP: MFS transporter, sugar porter (SP) family",+,+,+,+,Sugar Transport
+BCW-200158_00358,group_5623,Release factor glutamine methyltransferase,Type I DNA methyltransferase,+,+,+,+,DNA Modification
+BCW-200158_00365,group_5626,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000270_01143,araA,L-arabinose isomerase,L-arabinose isomerase,+,+,+,+,Carbohydrate
+BCW-200051_01676,group_2960,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000270_00165,scrB,Sucrose-6-phosphate hydrolase,Sucrose-6-phosphate hydrolase / glycosyl hydrolase family 32,+,+,+,+,Carbohydrate
+BCW-000631_02797,group_7961,Vitamin B12 import ATP-binding protein BtuD,ABC Transporter Type 1,+,+,+,+,Transport
+BCW-000631_02222,group_5436,Glycosyltransferase Gtf1,Membrane-bound galactosyl-transferase / GT1,+,+,+,+,Carbohydrate
+BCW-200051_01177,group_2262,hypothetical protein,Intrinsically disordered protein,+,+,+,+,Disordered
+BCW-200077_01394,group_3932,hypothetical protein,Putative DNA-binding domain superfamily,+,+,+,+,DNA Binding
+BCW-200051_01694,group_5503,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000631_01216,group_7798,hypothetical protein,Extracellular arabinose binding protein,+,+,+,+,Carbohydrate Transport
+BCW-000631_02798,group_8186,hypothetical protein,FEMO COFACTOR BIOSYNTHESIS PROTEIN NIFB,+,+,+,+,Nitrogen
+BCW-200051_01695,group_8270,hypothetical protein,No Matches,+,+,+,+,No matches
+BCW-000631_00801,hsrA_1,putative transport protein HsrA,Tetracycline resistance protein,+,+,-,+,Antibiotic
+BCW-000270_02494,maa_1,Maltose O-acetyltransferase,Sialic acid synthase related acetyl transferase,+,+,-,+,Cell Wall
+BCW-200051_01658,group_1077,Tyrosine recombinase XerD,DNA Integrase/Recombinase,+,+,-,+,DNA Modification
+BCW-000631_00807,group_7758,hypothetical protein,GGDEF: diguanylate cyclase ,+,+,-,+,Signaling
+BCW-000270_02473,group_1352,hypothetical protein,Calcineurin-like phosphoesterase,+,+,-,+,Phosphorylation
+BCW-000270_02493,ybjI_2,5-amino-6-(5-phospho-D-ribitylamino)uracil phosphatase YbjI,Haloacid dehalogenase-like hydrolase,+,+,-,+,Iron Metabolism
+BCW-200077_01201,besA,Ferri-bacillibactin esterase BesA,Siderophore triacetylfusarinine C esterase,+,+,-,+,Iron Metabolism
+BCW-000212_00679,group_407,hypothetical protein,Intrinsically disordered protein,+,+,-,-,Disordered
+BCW-200077_01199,feuB,Iron-uptake system permease protein FeuB,Transmembrane ABC transporter iron/siderophore pemease,+,+,-,+,Iron Transport
+BCW-000631_00806,bcsA,Cellulose synthase catalytic subunit [UDP-forming],Bacterial cellulose synthase subunit A,+,+,-,+,Carbohydrate
+BCW-000631_00808,group_2948,hypothetical protein,EAL domain containing cyclic di-GMP phosphodiesterase PDEI-related,+,+,-,+,Sensory
+BCW-000270_02425,group_4863,hypothetical protein,Metl-like transmembrane ABC transporter type I,+,+,-,+,Transport
+BCW-200077_01200,feuC_1,Iron-uptake system permease protein FeuC,Transmembrane ABC transporter iron/siderophore permease,+,+,-,+,Iron Transport
+BCW-000270_01196,group_2066,Tyrosine recombinase XerD,Phage-like Integrase,+,+,-,-,DNA Modification
+BCW-000270_02476,group_729,Reducing end xylose-releasing exo-oligoxylanase,Glycosyl hydrolase family 8,+,+,-,+,Carbohydrate
+BCW-000270_02492,ybjI_1,5-amino-6-(5-phospho-D-ribitylamino)uracil phosphatase YbjI,Haloacid dehalogenase-like hydrolase / Phosphomannomutase and Phosphatase Like,+,+,-,+,Carbohydrate
+BCW-000212_00133,xerD_1,Tyrosine recombinase XerD,DNA Integrase/Recombinase,+,+,-,-,DNA Modification
+BCW-000271_02510,group_5122,IS21 family transposase IS712,AAA+ ATP hydrolase / Chromosomal replication initiator protein DNAA,+,+,-,-,DNA Replication
+BCW-000631_00227,group_868,hypothetical protein,No matches,+,+,-,+,No matches
+BCW-000270_00166,group_6074,HTH-type transcriptional regulator DegA,Lactose operon repressor / transcription factor,+,+,-,+,Transcription Factor
+BCW-000270_01342,group_6190,hypothetical protein,yocH / RlpA - like cell wall-binding o-glycosyl hydrolase ,+,+,-,+,Cell Wall
+BCW-000270_02428,group_6283,hypothetical protein,CPBP intramembrane metalloprotease / CAAX prenyl protease 2,+,+,-,+,Protease
+BCW-000271_01484,group_4997,hypothetical protein,Intrinsically disordered protein,+,+,-,-,Disordered
+BCW-000270_02426,tauB,Taurine import ATP-binding protein TauB,Taurine ABC transporter,+,+,-,+,Transport
+BCW-000212_00155,group_2310,hypothetical protein,Phage Terminase small subunit,+,+,-,-,Phage
+BCW-200077_01197,group_3929,hypothetical protein,F420-Dependent-like NADP oxidoreductase,+,+,-,+,Oxidoreductase
+BCW-000270_01319,pinR,Serine recombinase PinR,DNA resolvase / recombinase,+,+,-,-,DNA modification
+BCW-000270_02427,group_6282,Transcriptional regulator LytR,Polyisoprenyl-teichoic acid--peptidoglycan teichoic acid transferase TAGU,+,+,-,+,Cell Wall
+BCW-200077_01202,yusV,putative siderophore transport system ATP-binding protein YusV,Iron Siderophore / Vitamin B12 / Hemin ABC transporter,+,+,-,+,Cofactor Transport
+BCW-200077_01411,group_8447,hypothetical protein,DNA/RNA non-specific endonuclease,+,+,-,+,DNA Modification
+BCW-000271_02412,crr_1,hypothetical protein,PTS system N-acetylmuramic acid-specific EIIBC component,+,+,-,-,Carbohydrate Transport
+BCW-000270_01676,group_1660,hypothetical protein,No matches,+,+,-,-,No Matches
+BCW-000631_00798,group_7755,scyllo-inositol 2-dehydrogenase (NADP(+)) IolU,NADP binding Oxidoreductase,+,+,-,+,Oxidoreductase
+BCW-000270_00164,group_6073,hypothetical protein,"Phosphotransferase system, sucrose-specific IIBC component",+,+,-,+,Carbohydrate Transport
+BCW-000270_02429,group_6284,hypothetical protein,TTHA1013/TTHA0281-like protein with speculated involvement in RNA metabolism,+,+,-,+,Unknown
+BCW-200077_01391,group_764,hypothetical protein,No matches,+,+,-,+,No matches
+BCW-000212_00151,group_298,hypothetical protein,Winged helix-like DNA-binding domain superfamily,+,+,-,-,DNA Modification
+BCW-000212_01240,group_955,hypothetical protein,Protein of unknown function (DUF1140),+,+,-,-,Unknown
+BCW-200077_01252,group_5543,hypothetical protein,No matches,+,+,-,+,No matches
+BCW-000270_00669,yxeP_1,putative hydrolase YxeP,Amidohydrolase / bacterial exopeptidase,+,+,-,-,Peptidase
+BCW-000270_02430,group_6285,Inner membrane protein YagU,Protein of unknown function (DUF1440),+,+,-,+,Unknown
+BCW-000270_00677,group_6113,hypothetical protein,Intrinsically disordered protein,+,+,-,+,Disordered
+BCW-200051_01662,group_3912,hypothetical protein,No matches,+,+,-,+,No matches
+BCW-200077_01390,group_301,hypothetical protein,Winged helix-like DNA-binding domain superfamily,+,+,-,+,DNA Modification
+BCW-000212_01940,group_4611,hypothetical protein,Periplasmic G3P-like solute binding protein,+,+,-,+,Cell Wall
+BCW-000212_00156,group_1810,hypothetical protein,Protein of unknown function DUF722,+,+,-,-,Unknown
+BCW-000212_01232,group_5879,hypothetical protein,Protein of unknown function (DUF722),+,+,-,-,Unknown
+BCW-000270_01314,lacD,"Tagatose 1,6-diphosphate aldolase","lacD: tagatose 1,6-diphosphate aldolase",+,+,-,-,Carbohydrate
+BCW-000270_01144,araD,L-ribulose-5-phosphate 4-epimerase AraD,L-Ribulose-5-phosphate 4-epimerase SGBE,+,+,-,+,Carbohydrate
+BCW-000270_01316,lacB,Galactose-6-phosphate isomerase subunit LacB,"lacB: galactose-6-phosphate isomerase, LacB subunit",+,+,-,-,Carbohydrate
+BCW-000212_00638,group_3091,hypothetical protein,No Matches,+,+,-,-,No matches
+BCW-000270_01029,group_2666,hypothetical protein,No Matches,+,+,-,+,No matches
+BCW-000270_02475,group_1288,Peptidoglycan-N-acetylglucosamine deacetylase,NodB-like chitooligosaccharide deacetylase,+,+,-,+,Cell Wall
+BCW-000270_01315,lacC_1,Tagatose-6-phosphate kinase,lacC: tagatose-6-phosphate kinase,+,+,-,-,Carbohydrate
+BCW-000271_00294,group_2103,Serine-pyruvate aminotransferase,Serine-pyruvate aminotransferase/2-aminoethylphosphonate-pyruvate transaminase,+,+,-,-,Transaminase
+BCW-000271_02489,comEC_1,ComE operon protein 3,DNA recombination protein,+,+,-,-,DNA Modification
+BCW-000270_01145,araB,Ribulokinase,Xylulose Kinase,+,+,-,+,Carbohydrate
+BCW-000270_01076,group_2667,hypothetical protein,Domain of unknown function (DUF4395),+,+,-,+,Unknown
+BCW-000270_00163,gmuE_1,Putative fructokinase,Transcriptional repressor MPRA,+,+,-,+,Transcription Factor
+BCW-000270_01313,lacF_1,PTS system lactose-specific EIIA component,"EIIA-LAC: PTS system, lactose-specific IIa component",+,+,-,-,Carbohydrate Transport
+BCW-000212_01604,licC,hypothetical protein,"lacE: PTS system, lactose/cellobiose family IIC component",+,+,-,+,Carbohydrate Transport
+BCW-200077_01384,bltD,Spermine/spermidine acetyltransferase,Spermine/Spermidine acetyltransferase,+,+,-,+,Peptide
+BCW-000271_01121,garK_1,Glycerate 2-kinase,Glycerate Kinase,+,+,-,-,Carbohydrate
+BCW-000271_00111,rpiB,Ribose-5-phosphate isomerase B,rpiB: ribose 5-phosphate isomerase B,+,+,-,-,Carbohydrate
+BCW-000212_00507,arcC1_3,Carbamate kinase 1,arcC: carbamate kinase,+,+,-,+,Phosphorylation
+BCW-000212_00141,group_4010,hypothetical protein,Intrinsically disordered protein,+,+,-,-,Disordered
+BCW-000212_00700,group_2401,hypothetical protein,Amino acid / polyamine permease transporter,+,+,-,+,Peptide
+BCW-000212_01946,group_5437,hypothetical protein,"Alpha-1,2-mannosidase, putative / glycosyl hydrolase family 92",+,+,-,+,Carbohydrate
+BCW-000212_00299,group_4070,hypothetical protein,No matches,+,+,-,-,No matches
+BCW-000271_01364,group_6487,hypothetical protein,No matches,+,+,-,-,No matches
+BCW-000270_01839,nhaK,hypothetical protein,"Cation/H+ exchanger, CPA1 family",+,+,-,+,Transport
+BCW-000270_00618,group_624,hypothetical protein,Bacterial lectin / B-type Collagen-binding surface protein - Cna-like,+,+,-,+,Cell Wall
+BCW-000212_00505,group_4133,hypothetical protein,ArsR-type transcriptional regulatory protein,+,+,-,+,Transcription Factor
+BCW-000270_01147,araR_1,Arabinose metabolism transcriptional repressor,Arabinose metabolism transcriptional repressor,+,+,-,+,Transcription Factor
+BCW-000212_01936,group_1219,hypothetical protein,Extracellular galactose binding protein,+,+,-,+,Cell Wall
+BCW-000271_01472,group_4996,hypothetical protein,DNA/RNA non-specific endonuclease,+,+,-,-,DNA Modification
+BCW-000631_01708,group_894,Cold shock protein 2,"Cold-shock protein, DNA-binding",+,+,-,+,DNA Modification
+BCW-000608_01917,xerD_2,Tyrosine recombinase XerD,Integrase,+,-,+,+,DNA Modification
+BCW-200051_01425,group_8253,hypothetical protein,Major facilitator superfamily (MFS) transporter,+,-,+,+,Transport
+BCW-200077_02286,group_5560,hypothetical protein,YxeA-like superfamily protein of unknown function DUF1093,+,-,+,+,Unknown
+BCW-200077_00351,group_173,hypothetical protein,Bacteriophage peptidoglycan hydrolase / lysin,+,-,+,+,Carbohydrate
+BCW-200077_01388,group_2965,hypothetical protein,Intrinsically disordered protein,+,-,+,+,Disordered
+BCW-000631_01217,group_7799,Lactose transport system permease protein LacF,Binding-protein-dependent Metl-like inner membrane ABC transporter type 1,+,-,+,+,Transport
+BCW-000212_00650,group_3096,hypothetical protein,No Matches,-,+,+,+,No matches
+BCW-200158_00364,group_5625,Type I restriction enzyme EcoR124II R protein,Type I restriction endonuclease,-,+,+,+,DNA Modification
+BCW-000631_01694,group_7846,hypothetical protein,Protein of unknown function DUF1275,-,+,+,+,Unknown
+BCW-000212_01408,rbsA,Ribose import ATP-binding protein RbsA,D-allose import ABC transporter,-,+,+,+,Carbohydrate Transport
+BCW-200051_00183,group_8177,Acetyl esterase,Arylacetamide deacetylase ,-,+,+,+,Cytosolic metabolism
+BCW-000631_00960,group_2949,hypothetical protein,intrinsically disordered protein,-,+,+,+,Disordered
+BCW-200158_01930,gtf1,Glycosyltransferase Gtf1,TIGR02918: accessory Sec system glycosylation protein GtfA / GT1,-,+,+,+,Carbohydrate
+BCW-200051_00189,group_3903,Sugar transporter SemiSWEET,Membrane-bound protein with PQ-loop repeats,-,+,+,+,Unknown
+BCW-200051_01101,group_3907,hypothetical protein,No matches,-,+,+,+,No matches
+BCW-200051_00194,gmuB,PTS system oligo-beta-mannoside-specific EIIB component,"PTS system N,N'-diacetylchitobiose-specific EIIB component ",-,+,+,+,Carbohydrate Transport
+BCW-000631_01628,group_7841,Teichoic acid translocation permease protein TagG,Inner membrane ABC -2 type transport permease ,-,+,+,+,Cell Wall Transport
+BCW-200158_00223,group_8868,hypothetical protein,peptidoglycan-bound (lpxtg motif) mucin-binding protein,-,+,+,+,Cell Wall
+BCW-200051_00192,group_3905,hypothetical protein,Outer surface protein with aldolase and peptidyl-prolyl isomerase domains,-,+,+,+,Cell Wall
+BCW-000212_01926,group_2588,1-deoxy-D-xylulose-5-phosphate synthase,1-deoxy-D-xylulose-5-phosphate synthase,-,+,+,+,Carbohydrate
+BCW-200158_00228,group_8871,hypothetical protein,No Matches,-,+,+,+,No matches
+BCW-200158_00359,group_5624,hypothetical protein,Fido-domain containing AMP-protein transferase,-,+,+,+,Peptide
+BCW-200051_01097,group_5490,hypothetical protein,Haemolysin XhlA,-,+,+,+,Virulence
+BCW-200158_00220,group_8866,hypothetical protein,Mga helix-turn-helix domain containing DNA binding protein,-,+,+,+,DNA Binding

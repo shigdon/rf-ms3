@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586387621762.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "108016466",
+    "id" : "D5968EF3",
+    "lastKnownWriteTime" : 1605147649,
+    "last_content_update" : 1605147649561,
+    "path" : "~/Box/SMH_PhD/SMH_Thesis/Manuscripts/SMH_Manuscript_3_Lactococcus/R-analysis/rf-ms3/rf-lactococcus.Rmd",
+    "project_path" : "rf-lactococcus.Rmd",
+    "properties" : {
+        "cursorPosition" : "1031,27",
+        "docOutlineVisible" : "1",
+        "last_setup_crc32" : "C47BC6F8bb338d19",
+        "scrollLine" : "1017"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

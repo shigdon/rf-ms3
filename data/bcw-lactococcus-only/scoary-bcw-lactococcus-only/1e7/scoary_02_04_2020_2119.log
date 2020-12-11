@@ -1,0 +1,27 @@
+04/02/2020 09:19:48 PM    ==== Scoary started ====
+04/02/2020 09:19:48 PM    Command: /home/smhigdon/anaconda3/envs/roary/bin/scoary -t input_files/scoary_bcw-lac-only_bnf.csv -g analysis/roary-bcw-lactococcus-only/gene_presence_absence.csv -o analysis/scoary-bcw-lactococcus-only -p 1E-7 -c BH --upgma_tree --threads 8 --delimiter ,
+04/02/2020 09:19:48 PM    Reading gene presence absence file
+04/02/2020 09:19:49 PM    Creating Hamming distance matrix based on gene presence/absence
+04/02/2020 09:19:49 PM    Building UPGMA tree from distance matrix
+04/02/2020 09:19:49 PM    Reading traits file
+04/02/2020 09:19:49 PM    Finished loading files into memory.
+
+
+04/02/2020 09:19:49 PM    ==== Performing statistics ====
+04/02/2020 09:19:49 PM    -- Filtration options --
+04/02/2020 09:19:49 PM    Benjamini-Hochberg:    1e-07
+04/02/2020 09:19:49 PM    Collapse genes:    False
+
+
+04/02/2020 09:19:49 PM    Tallying genes and performing statistical analyses
+04/02/2020 09:19:49 PM    Gene-wise counting and Fisher's exact tests for trait: bnf
+04/02/2020 09:19:53 PM    Adding p-values adjusted for testing multiple hypotheses
+04/02/2020 09:19:53 PM    Wrote the UPGMA tree to file: analysis/scoary-bcw-lactococcus-only/Tree_02_04_2020_2119.nwk
+04/02/2020 09:19:53 PM    Storing results: bnf
+04/02/2020 09:19:53 PM    Calculating max number of contrasting pairs for each nominally significant gene
+04/02/2020 09:19:55 PM    Storing results to file
+04/02/2020 09:19:55 PM    
+
+04/02/2020 09:19:55 PM    ==== Finished ====
+04/02/2020 09:19:55 PM    Checked a total of 9830 genes for associations to 1 trait(s). Total time used: 6 seconds.
+04/02/2020 09:19:55 PM    No warnings were recorded.

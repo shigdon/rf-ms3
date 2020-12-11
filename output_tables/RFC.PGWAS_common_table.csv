@@ -1,0 +1,78 @@
+Feature,Roary.Annotation,Roary.description
+BCW-000631_00801,hsrA_1,putative transport protein HsrA
+BCW-000270_02494,maa_1,Maltose O-acetyltransferase
+BCW-200051_01658,group_1077,Tyrosine recombinase XerD
+BCW-000631_00807,group_7758,hypothetical protein
+BCW-000270_02473,group_1352,hypothetical protein
+BCW-000270_02493,ybjI_2,5-amino-6-(5-phospho-D-ribitylamino)uracil phosphatase YbjI
+BCW-200077_01201,besA,Ferri-bacillibactin esterase BesA
+BCW-000212_00679,group_407,hypothetical protein
+BCW-200077_01199,feuB,Iron-uptake system permease protein FeuB
+BCW-000631_00806,bcsA,Cellulose synthase catalytic subunit [UDP-forming]
+BCW-000631_00808,group_2948,hypothetical protein
+BCW-000270_02425,group_4863,hypothetical protein
+BCW-200077_01200,feuC_1,Iron-uptake system permease protein FeuC
+BCW-000270_01196,group_2066,Tyrosine recombinase XerD
+BCW-000270_02476,group_729,Reducing end xylose-releasing exo-oligoxylanase
+BCW-000270_02492,ybjI_1,5-amino-6-(5-phospho-D-ribitylamino)uracil phosphatase YbjI
+BCW-000212_00133,xerD_1,Tyrosine recombinase XerD
+BCW-000271_02510,group_5122,IS21 family transposase IS712
+BCW-000631_00227,group_868,hypothetical protein
+BCW-000270_00166,group_6074,HTH-type transcriptional regulator DegA
+BCW-000270_01342,group_6190,hypothetical protein
+BCW-000270_02428,group_6283,hypothetical protein
+BCW-000271_01484,group_4997,hypothetical protein
+BCW-000270_02426,tauB,Taurine import ATP-binding protein TauB
+BCW-000212_00155,group_2310,hypothetical protein
+BCW-200077_01197,group_3929,hypothetical protein
+BCW-000270_01319,pinR,Serine recombinase PinR
+BCW-000270_02427,group_6282,Transcriptional regulator LytR
+BCW-200077_01202,yusV,putative siderophore transport system ATP-binding protein YusV
+BCW-200077_01411,group_8447,hypothetical protein
+BCW-000271_02412,crr_1,hypothetical protein
+BCW-000270_01676,group_1660,hypothetical protein
+BCW-000631_00798,group_7755,scyllo-inositol 2-dehydrogenase (NADP(+)) IolU
+BCW-000270_00164,group_6073,hypothetical protein
+BCW-000270_02429,group_6284,hypothetical protein
+BCW-200077_01391,group_764,hypothetical protein
+BCW-000212_00151,group_298,hypothetical protein
+BCW-000212_01240,group_955,hypothetical protein
+BCW-200077_01252,group_5543,hypothetical protein
+BCW-000270_00669,yxeP_1,putative hydrolase YxeP
+BCW-000270_02430,group_6285,Inner membrane protein YagU
+BCW-000270_00677,group_6113,hypothetical protein
+BCW-200051_01662,group_3912,hypothetical protein
+BCW-200077_01390,group_301,hypothetical protein
+BCW-000212_01940,group_4611,hypothetical protein
+BCW-000212_00156,group_1810,hypothetical protein
+BCW-000212_01232,group_5879,hypothetical protein
+BCW-000270_01314,lacD,"Tagatose 1,6-diphosphate aldolase"
+BCW-000270_01144,araD,L-ribulose-5-phosphate 4-epimerase AraD
+BCW-000270_01316,lacB,Galactose-6-phosphate isomerase subunit LacB
+BCW-000212_00638,group_3091,hypothetical protein
+BCW-000270_01029,group_2666,hypothetical protein
+BCW-000270_02475,group_1288,Peptidoglycan-N-acetylglucosamine deacetylase
+BCW-000270_01315,lacC_1,Tagatose-6-phosphate kinase
+BCW-000271_00294,group_2103,Serine-pyruvate aminotransferase
+BCW-000271_02489,comEC_1,ComE operon protein 3
+BCW-000270_01145,araB,Ribulokinase
+BCW-000270_01076,group_2667,hypothetical protein
+BCW-000270_00163,gmuE_1,Putative fructokinase
+BCW-000270_01313,lacF_1,PTS system lactose-specific EIIA component
+BCW-000212_01604,licC,hypothetical protein
+BCW-200077_01384,bltD,Spermine/spermidine acetyltransferase
+BCW-000271_01121,garK_1,Glycerate 2-kinase
+BCW-000271_00111,rpiB,Ribose-5-phosphate isomerase B
+BCW-000212_00507,arcC1_3,Carbamate kinase 1
+BCW-000212_00141,group_4010,hypothetical protein
+BCW-000212_00700,group_2401,hypothetical protein
+BCW-000212_01946,group_5437,hypothetical protein
+BCW-000212_00299,group_4070,hypothetical protein
+BCW-000271_01364,group_6487,hypothetical protein
+BCW-000270_01839,nhaK,hypothetical protein
+BCW-000270_00618,group_624,hypothetical protein
+BCW-000212_00505,group_4133,hypothetical protein
+BCW-000270_01147,araR_1,Arabinose metabolism transcriptional repressor
+BCW-000212_01936,group_1219,hypothetical protein
+BCW-000271_01472,group_4996,hypothetical protein
+BCW-000631_01708,group_894,Cold shock protein 2

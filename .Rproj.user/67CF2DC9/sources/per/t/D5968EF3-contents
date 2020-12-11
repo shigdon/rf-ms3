@@ -1,0 +1,1049 @@
+---
+title: "rf-lactococcus"
+author: "Shawn Higdon"
+date: "3/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r, message=FALSE}
+library(randomForest)
+library(plyr)
+library(rfUtilities)
+library(caret)
+library(ranger)
+library(rsample)
+library(tidyverse)
+```
+
+## Read in Data
+```{r}
+pan_genome <- read.table("data/bcw-lactococcus-only/gene_presence_absence.Rtab", sep ="\t", header = T, row.names = 1, stringsAsFactors = FALSE, quote = "")
+#colnames(pan_genome)
+tail(rownames(pan_genome))
+metadata <- read.csv("data/bcw-lactococcus-only/metadata-bcw-lactococcus-only.csv", header = T, row.names = 1, stringsAsFactors = FALSE)
+
+```
+
+## Evaluate dimension
+```{r}
+dim(pan_genome)
+dim(metadata)
+```
+
+## Assess structure
+```{r}
+str(metadata)
+summary(metadata)
+```
+
+## Running Model
+
+### Prep input tables for classification of state:
+
+> Format input tables by transposing samples with genes, treating genes as column variables and rows as samples
+
+```{r}
+# transpose data frame
+pan_genome_state <- data.frame(t(pan_genome))
+
+# set classification state as factor
+pan_genome_state$state <- factor(metadata[rownames(pan_genome_state), "state"])
+class(pan_genome_state$state)
+```
+
+### Prep input tables for regression of BNF score (BNF):
+```{r}
+# transpose data frame
+pan_genome_BNF <- data.frame(t(pan_genome))
+
+# assess class of regression variable
+pan_genome_BNF$BNF <- metadata[rownames(pan_genome_BNF), "bnf.ratio"]
+class(pan_genome_BNF$BNF)
+```
+
+## RFC1
+
+> Run the model with randomForest package - No training
+
+### Train RFC1 Model
+```{r}
+# set random seed for reproducibility
+set.seed(151)
+
+# Run RF to classify diazotroph and control samples:
+RF_state_classify <- randomForest( x = pan_genome_state[, 1:(ncol(pan_genome_state)-1)],
+                                   y = pan_genome_state[, ncol(pan_genome_state)], ntree = 501, importance = TRUE, proximities = TRUE)
+
+```
+
+### Inspect Model
+```{r}
+RF_state_classify
+RF_state_classify$predicted
+```
+
+
+### Plot
+```{r}
+plot(RF_state_classify)
+```
+
+
+### Save the model
+```{r}
+saveRDS( file = "RF.models-lactococcus-only/RF_state_model.rda" , RF_state_classify )
+```
+
+### Permmutation Test
+
+> Although above performance metrics provided by the models were encouraging, often it isn't clear that a model is working well. Testing whether the model's performance metric is more extreme than expected by chance based on a permutation test is one method 
+
+> run significance test to assess model significance with 1000 permutations:
+
+```{r}
+#RF_state_classify_sig <- rf.significance( x=RF_state_classify ,
+#                                          xdata = pan_genome_state[,1:(ncol(pan_genome_state)-1)], nperm = 1000, ntree=501)
+
+```
+
+### Save Permutation Test
+```{r}
+#saveRDS( file = "RF_state_classify_sig.rda" , RF_state_classify_sig)
+```
+
+### RFC1 - LOOCV
+
+> Leave one out cross validation test
+
+```{r, message=FALSE}
+library(doParallel)
+cl <- parallel::makeCluster(11, setup_strategy = "sequential")
+registerDoParallel(cl)
+
+# Leave one out cross-validation
+fit_control <- trainControl(method = "LOOCV")
+
+rfc_loocv <- train(state ~.,
+                   pan_genome_state,
+                   method = "rf",
+                   ntree = 501,
+                   tuneGrid = data.frame(mtry = 99),
+                   trControl = fit_control)
+
+stopCluster(cl)
+
+rfc_loocv$results
+```
+
+### RFC1 - VI
+
+> Assess predictor variable importance
+
+```{r}
+RF_state_classify_imp <- as.data.frame(RF_state_classify$importance)
+RF_state_classify_imp$features <- rownames(RF_state_classify_imp)
+RF_state_classify_imp_sorted <- arrange(RF_state_classify_imp, desc(MeanDecreaseAccuracy))
+barplot(RF_state_classify_imp_sorted$MeanDecreaseAccuracy,
+        ylab = "Mean Decrease in Accuracy (Variable Importance)",
+        main = "RF Classification Variable Importance Distribution")
+```
+
+### Top 10 Plot
+
+> Plot the top 10 predictors ranked by decreasing VI
+
+```{r}
+barplot(RF_state_classify_imp_sorted[1:10,"MeanDecreaseAccuracy"],
+        names.arg=RF_state_classify_imp_sorted[1:10,"features"],
+        ylab="Mean Decrease in Accuracy (Variable Importance)",
+        las=2,
+        ylim=c(0,0.02),
+        main="Classification RF")
+
+```
+
+### Extract top 200 Genes
+```{r}
+# Classification Model
+RF_classify_top200 <- RF_state_classify_imp_sorted[1:200,]
+
+## add method variable
+RF_classify_top200$Method <- "RF Classify"
+
+### Make df for comparison with scoary genes
+RF_classify_cmp <- RF_classify_top200 %>%
+  select(features, Method)
+
+#### Convert features to factor
+RF_classify_cmp$features <- as.factor(RF_classify_cmp$features)
+
+##### Count number of Hypothetical proteins (those with 'group' prefixes)
+RF_classify_top200 %>% 
+   filter(grepl("group", features, fixed = T)) %>% count() # 142 features annotated as HPs by Prokka
+
+```
+
+> The RFC model identified 142 variables (genes) with high importance that were annotated as hypothetical proteins.
+
+## RFR Model
+
+### Train RFR Model
+```{r}
+# set random seed for reproducibility
+set.seed(151)
+
+# Run RF to refress genes against BNF score (bnf.ratio):
+RF_BNF_regress <- randomForest( x = pan_genome_BNF[, 1:(ncol(pan_genome_BNF)-1)],
+                                y = pan_genome_BNF[, ncol(pan_genome_BNF)], ntree = 501, importance = TRUE, proximities = TRUE)
+```
+
+### Inspect Model
+```{r}
+RF_BNF_regress
+```
+
+### Plot
+```{r}
+plot(RF_BNF_regress)
+```
+
+### Save Model
+```{r}
+saveRDS( file = "RF.models-lactococcus-only/RF_BNF_model.rda" , RF_BNF_regress )
+```
+
+### Permutation Test
+```{r}
+#RF_BNF_regress_sig <- rf.significance( x=RF_BNF_regress ,
+#                                      xdata = pan_genome_BNF[,1:(ncol(pan_genome_BNF)-1)], nperm = 1000, ntree=501)
+```
+
+### Save Permutation Test
+```{r}
+#saveRDS( file = "RF_BNF_regress_sig.rda" , RF_BNF_regress_sig)
+```
+
+### RFR - LOOCV
+```{r}
+set.seed(123)
+library(doParallel)
+cl <- parallel::makeCluster(11, setup_strategy = "sequential")
+registerDoParallel(cl)
+
+# Leave one out cross-validation
+fit_control <- trainControl(method = "LOOCV")
+
+rfr_loocv <- train(BNF ~.,
+                   pan_genome_BNF,
+                   method = "rf",
+                   ntree = 501,
+                   tuneGrid = data.frame(mtry = 3276),
+                   trControl = fit_control)
+
+stopCluster(cl)
+
+rfr_loocv$results
+```
+
+### RFR - VI
+
+> Assess predictor variable importance
+
+```{r}
+RF_BNF_regress_imp <- as.data.frame(RF_BNF_regress$importance)
+RF_BNF_regress_imp$features <- rownames(RF_BNF_regress_imp)
+RF_BNF_regress_imp_sorted <- arrange(RF_BNF_regress_imp,
+                                    desc(`%IncMSE`))
+barplot(RF_BNF_regress_imp_sorted$`%IncMSE`,
+        ylab="% Increase in Mean Squared Error (Variable Importance)",
+        main="RF Regression Variable Importance Distribution")
+```
+
+### Top 10 Plot
+
+> Plot the top 10 predictors ranked by decreasing VI
+
+```{r}
+barplot(RF_BNF_regress_imp_sorted[1:10,"%IncMSE"],
+        names.arg=RF_BNF_regress_imp_sorted[1:10,"features"],
+        ylab="% Increase in Mean Squared Error (VI)",
+        las=2,
+        ylim=c(0,0.2),
+        main="RFR Predictors ranked by VI")
+```
+
+### Export top 200 Genes
+```{r}
+# Regression Model
+RF_regress_top200 <- RF_BNF_regress_imp_sorted[1:200,]
+
+## add method variable
+RF_regress_top200$Method <- "RF Regression"
+
+### Make df for comparison with scoary genes
+RF_regress_cmp <- RF_regress_top200 %>%
+  select(features, Method)
+
+#### Convert features to factor
+RF_regress_cmp$features <- as.factor(RF_regress_cmp$features)
+
+##### Count number of Hypothetical proteins (those with 'group' prefixes)
+RF_regress_top200 %>% 
+   filter(grepl("group", features, fixed = T)) %>% count() # 165 features annotated as HPs by Prokka
+
+```
+
+> The RFR model identified 165 genes with HP annotations.
+
+## RFC2
+
+> Train/Test/Validate
+
+### Extract Validation Set
+```{r}
+# isolate list
+isolate.list <- data.frame(ID=rownames(metadata))
+
+# subset to remove validation isolates: BCW.000631; BCW.000270; BCW.000689
+validation.isolate.list <- data.frame(ID=c("BCW.000631", "BCW.000270", "BCW.000689"))
+
+# subset to create validation isolate dataframe
+pg.validation <- subset(pan_genome_state, rownames(pan_genome_state) %in% validation.isolate.list$ID)
+
+#subset to create isolate dataframe for RF modeling
+pg.state <- subset(pan_genome_state, !rownames(pan_genome_state) %in% validation.isolate.list$ID)
+
+# set classification state as factor for training dataset
+pg.state$state <- factor(metadata$state[match(rownames(pg.state), rownames(metadata))])
+
+# count N samples surviving, should be 90 to reflect subtracting 3 validators
+pg.state %>% select("state") %>% count()
+```
+
+### Train/Test Split
+```{r}
+# set random seed for reproducibility
+set.seed(8488)
+# Create training set (70%) and test (30%) for the data
+pg.split <- initial_split(pg.state, 0.7)
+
+# designate samples for training
+pg.train <- training(pg.split)
+pg.train %>% select("state") %>% count()
+
+# designate samples for testing
+pg.test <- testing(pg.split)
+pg.test %>% select("state") %>% count()
+
+# check proportions
+63/90
+```
+
+### Train RFC2 model
+
+```{r}
+# for reproducibility
+set.seed(151)
+
+# Run RF to classify diazotroph and control samples:
+rfc2 <- randomForest( x = pg.train[, 1:(ncol(pg.train)-1)],
+                                   y = pg.train[, ncol(pg.train)], ntree = 501, importance = TRUE, proximities = TRUE)
+```
+
+### Inspect RFC2 model
+```{r}
+print(rfc2)
+
+attributes(rfc2)
+
+plot(rfc2)
+```
+
+### RFC2 - LOOCV
+
+> Leave one out cross validation test
+
+```{r, message=FALSE}
+# set random seed for reproducibility
+set.seed(999)
+
+# register parallel processing core cluster
+library(doParallel)
+cl <- parallel::makeCluster(8, setup_strategy = "sequential")
+registerDoParallel(cl)
+
+# define CV method
+fit_control <- trainControl(method = "LOOCV")
+
+# run LOOCV
+rfc2_loocv <- train(state ~.,
+                   pg.train,
+                   method = "rf",
+                   ntree = 501,
+                   tuneGrid = data.frame(mtry = 99),
+                   trControl = fit_control)
+
+stopCluster(cl)
+
+# inspect results
+rfc2_loocv$results
+```
+
+
+### RFC2 - VI
+```{r}
+rfc2_imp.df <- as.data.frame(rfc2$importance)
+rfc2_imp.df$features <- rownames(rfc2_imp.df)
+rfc2_imp.df.sorted <- arrange(rfc2_imp.df, desc(MeanDecreaseAccuracy))
+barplot(rfc2_imp.df.sorted$MeanDecreaseAccuracy, ylab = "Variable Importance")
+```
+
+### Top 10 Plot
+
+> Plot the top 10 predictors ranked by decreasing VI
+
+```{r}
+barplot(rfc2_imp.df.sorted[1:10,"MeanDecreaseAccuracy"],
+        names.arg=rfc2_imp.df.sorted[1:10,"features"],
+        ylab="Mean Decrease in Accuracy (Variable Importance)",
+        las=2,
+        ylim=c(0,0.02),
+        main="Classification RF")
+
+```
+
+### Extract top 200 Genes
+```{r}
+# Classification Model
+rfc2_top200 <- rfc2_imp.df.sorted[1:200,]
+
+## add method variable
+rfc2_top200$Method <- "RF Classify"
+
+### Make df for comparison with scoary genes
+rfc2_cmp <- rfc2_top200 %>%
+  select(features, Method)
+
+#### Convert features to factor
+rfc2_cmp$features <- as.factor(rfc2_cmp$features)
+
+##### Count number of Hypothetical proteins (those with 'group' prefixes)
+rfc2_top200 %>% 
+   filter(grepl("group", features, fixed = T)) %>% count() # 158 features annotated as HPs by Prokka
+
+```
+
+> The RFC2 model identified 158 variables (genes) with high importance that were annotated as hypothetical proteins.
+
+### Predictions
+
+> Use model to predict states for all 3 datasets.
+
+#### Train set
+```{r}
+rfc2.p1 <- predict(rfc2, pg.train)
+
+confusionMatrix(rfc2.p1, pg.train$state)
+```
+
+#### Test set
+```{r}
+rfc2.p2 <- predict(rfc2, pg.test)
+confusionMatrix(rfc2.p2, pg.test$state)
+```
+
+#### Validation set
+```{r}
+rfc2.p3 <- predict(rfc2, pg.validation)
+confusionMatrix(rfc2.p3, pg.validation$state)
+```
+
+
+
+```{r}
+head(RF_BNF_regress_imp_sorted, n=100)
+head(RF_state_classify_imp_sorted, n=100)
+```
+
+
+
+## Scoary Genes - 1e-6 cutoff
+```{r}
+scoary_genes <- read.csv("./data/bcw-lactococcus-only/scoary-bcw-lactococcus-only/1e6/bnf_02_04_2020_2126.results.csv", header = T)
+
+## add method variable
+scoary_genes$Method <- "Scoary"
+
+## make df for scoary comparison with RF model hits
+scoary_cmp <- scoary_genes %>%
+  select(Gene, Method) %>%
+  rename(features = Gene)
+  
+n_distinct(scoary_genes$Gene)
+```
+
+### Scoary Summary
+```{r}
+## Filter genes in mucilage isolates but not in control
+scoary_bnf_unique <- scoary_genes %>%
+  filter(Number_pos_present_in > 0 &
+           Number_neg_present_in == 0 &
+           Number_pos_not_present_in >= 0
+        )
+
+# summarize
+scoary_bnf_unique %>% group_by(Annotation) %>% count()
+
+## Filter genes not in mucilage isolates but in controls
+scoary_bnf_absent <- scoary_genes %>%
+  filter(Number_pos_present_in == 0 &
+           Number_neg_present_in > 0 &
+           Number_neg_not_present_in >= 0
+           )
+
+# summarize
+scoary_bnf_absent %>% group_by(Annotation) %>% count()
+
+## S5 Table - scoary results table for manuscript
+colnames(scoary_genes)
+S5_table <- scoary_genes %>%
+  select(Gene,
+         Non.unique.Gene.name,
+         Annotation,
+         Annotation,
+         Number_pos_present_in,
+         Number_neg_present_in,
+         Number_pos_not_present_in,
+         Number_neg_not_present_in,
+         Odds_ratio,
+         Benjamini_H_p)
+
+write_csv(S5_table, "./output_tables/S5_Table.csv", col_names = T)
+
+```
+
+> `scoary_bnf_unique` subset shows 35 genes uniquely present in mucilage isolates identified by scoary. Summary of Annotations shows 26 hypothetical proteins and 9 genes with different annotations, most related to Iron uptake
+
+> `scoary_bnf_absent` subset shows 103 genes completely absent from mucilage isolate genomes identified by scoary, but present in many dairy isolates. Summary of Annotations showed 59 hypothetical proteins and 42 unique gene functions.
+
+
+## Gene Intersections
+
+### Upset Plots
+
+> Use the UpSetR package to compare high VI gene sets from each RF model and Pan-GWAS analysis.
+
+#### Extract Feature function
+
+> Functions from [Seb-Mueller Github Gist](https://gist.github.com/seb-mueller/9d07aa7f0ebf1caf2219cf52fbf518c2) to extract intersection features.
+
+```{r}
+# source of this function: https://github.com/hms-dbmi/UpSetR/issues/85#issuecomment-327900647
+fromList <- function (input) {
+  # Same as original fromList()...
+  elements <- unique(unlist(input))
+  data <- unlist(lapply(input, function(x) {
+      x <- as.vector(match(elements, x))
+      }))
+  data[is.na(data)] <- as.integer(0)
+  data[data != 0] <- as.integer(1)
+  data <- data.frame(matrix(data, ncol = length(input), byrow = F))
+  data <- data[which(rowSums(data) != 0), ]
+  names(data) <- names(input)
+  # ... Except now it conserves your original value names!
+  row.names(data) <- elements
+  return(data)
+}
+
+overlapGroups <- function (listInput, sort = TRUE) {
+  # listInput could look like this:
+  # $one
+  # [1] "a" "b" "c" "e" "g" "h" "k" "l" "m"
+  # $two
+  # [1] "a" "b" "d" "e" "j"
+  # $three
+  # [1] "a" "e" "f" "g" "h" "i" "j" "l" "m"
+  listInputmat    <- fromList(listInput) == 1
+  #     one   two three
+  # a  TRUE  TRUE  TRUE
+  # b  TRUE  TRUE FALSE
+  #...
+  # condensing matrix to unique combinations elements
+  listInputunique <- unique(listInputmat)
+  grouplist <- list()
+  # going through all unique combinations and collect elements for each in a list
+  for (i in 1:nrow(listInputunique)) {
+    currentRow <- listInputunique[i,]
+    myelements <- which(apply(listInputmat,1,function(x) all(x == currentRow)))
+    attr(myelements, "groups") <- currentRow
+    grouplist[[paste(colnames(listInputunique)[currentRow], collapse = ":")]] <- myelements
+    myelements
+    # attr(,"groups")
+    #   one   two three 
+    # FALSE FALSE  TRUE 
+    #  f  i 
+    # 12 13 
+  }
+  if (sort) {
+    grouplist <- grouplist[order(sapply(grouplist, function(x) length(x)), decreasing = TRUE)]
+  }
+  attr(grouplist, "elements") <- unique(unlist(listInput))
+  return(grouplist)
+  # save element list to facilitate access using an index in case rownames are not named
+}
+
+```
+
+
+#### 3 Method Intersection
+
+> Compare significant genes identified between RFC1 model, RFR model and Scoary pan-GWAS analysis.
+
+```{r}
+library(UpSetR)
+upset_list <- list(`Pan-GWAS` = scoary_genes$Gene,
+                   `RF Classification` = RF_classify_top200$features,
+                   `RFR Regression` = RF_regress_top200$features)
+
+upset_plot <- UpSetR::upset(UpSetR::fromList(upset_list),
+                            matrix.color = "firebrick4", point.size = 5,
+                            mainbar.y.label = "Gene Intersection Size",
+                            sets.x.label = "Gene Set Size",
+                            sets.bar.color = c("seagreen", "gold", "dodgerblue4"),
+                            text.scale = c(1.5))
+upset_plot
+
+# save as PDF
+pdf(file = "./plots/lac_upset_plot.pdf")
+upset_plot
+dev.off()
+```
+
+##### Extract intersection feature lists
+```{r}
+# extract group feature lists
+all.3.groups <- overlapGroups(upset_list)
+#View(all.3.groups)
+
+# features in all groups
+attr(all.3.groups, "elements")
+
+# extract features in GWAS:RFC1:RFR group
+all.3.common.df <- data.frame(all.common = attr(all.3.groups, "elements")[all.3.groups[[5]]])
+View(all.3.common.df)
+```
+
+#### RFC1 & RFC2
+
+> Perform a mild form of variable selection by comparing the top 200 VI predictors from the initial and validation RFC models.
+
+```{r}
+library(UpSetR)
+upset_list2 <- list(`RFC1` = RF_classify_top200$features,
+                    `RFC2` = rfc2_top200$features)
+
+upset_plot2 <- UpSetR::upset(UpSetR::fromList(upset_list2),
+                             matrix.color = "firebrick4", point.size = 5,
+                             mainbar.y.label = "Gene Intersection Size",
+                             sets.x.label = "Gene Set Size",
+                             #sets.bar.color = c("seagreen", "gold", "dodgerblue4"),
+                             text.scale = c(1.5))
+upset_plot2
+
+# save as PDF
+pdf(file = "./plots/rfc_cmp_upset_plot.pdf")
+upset_plot2
+dev.off()
+```
+
+##### Extract intersection feature lists
+```{r}
+# extract group feature lists
+rfc_groups <- overlapGroups(upset_list2)
+
+# features in all groups
+attr(rfc_groups, "elements")
+
+# extract features in RFC1:RFC2 group
+rfc.common.df <- data.frame(rfc.common = attr(rfc_groups, "elements")[rfc_groups[[3]]])
+
+#sort(attr(rfc_groups, "elements")[rfc_groups[[3]]])
+```
+
+#### Assess VI
+
+> Count the number of 84 selected RFC variables present in the list of 34 predictors identified by all 3 methods (RFC1, RFR, Pan-GWAS).
+
+```{r}
+# subset the 84 predictors & keep those present in the list of 34 commonly identified variables
+rfc.select.df <- subset(rfc.common.df, rfc.common %in% all.3.common.df$all.common)
+
+# arrange descending alphabetically
+rfc.select.df <- rfc.select.df %>% arrange(rfc.common)
+```
+
+
+### Extract feature lists
+```{r}
+# Unique Features identified with RF Classification model
+RF_classify_unique_genes_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["100"]])
+
+## write table to file
+write_tsv(RF_classify_unique_genes_df, "./gene-lists/RF_classify_unique_genes_71.tsv", col_names = F)
+
+# Unique Features identified with RF Regression model
+RF_regress_unique_genes_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["010"]])
+
+## write table to file
+write_tsv(RF_regress_unique_genes_df, "./gene-lists/RF_regress_unique_genes_142.tsv", col_names = F)
+
+# Commmon Features identified by RF but not panGWAS
+RF_common_genes_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["110"]])
+
+## write table to file
+write_tsv(RF_common_genes_df, "./gene-lists/RF_common_genes_18.tsv", col_names = F)
+
+# Common Features for all three methods
+common_important_genes_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["111"]])
+
+## write table to file
+write_tsv(common_important_genes_df, "./gene-lists/common_important_genes_34.tsv", col_names = F)
+
+# Common Features for RF Classification and panGWAS
+common_RFC.pgwas_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["101"]])
+
+## write table to file
+write_tsv(common_RFC.pgwas_df, "./gene-lists/common_RFC.pgwas_77.tsv", col_names = F)
+
+# Common Features for RF Regression and panGWAS
+common_RFR.pgwas_df <- data.frame(features = Venn_imp_genes@IntersectionSets[["011"]])
+
+## write table to file
+write_tsv(common_RFR.pgwas_df, "./gene-lists/common_RFR.pgwas_6.tsv", col_names = F)
+
+```
+
+> Features were analyzed using Interproscan 5.32.16 externally on the FARM server cluster at UC Davis to generate tsv files with domain annotations. Results were read into R to generate feature annotation tables.
+
+### Summarize features
+```{r}
+# Count number of Hypothetical proteins (those with 'group' prefixes)
+## Common to all 3 methods
+common_important_genes_df %>% 
+  filter(grepl("group", features, fixed = T)) %>% count() # 25 HPs
+
+## Common to RFC and Scoary
+common_RFC.pgwas_df %>% 
+  filter(grepl("group", features, fixed = T)) %>% count() # 48 HPs
+
+## Common to RFR and Scoary
+common_RFR.pgwas_df %>% 
+  filter(grepl("group", features, fixed = T)) %>% count() # 5 HPs
+
+```
+
+> 78 Hypothetical Proteins out of 117 total genes commonly identified.
+
+## Inteproscan Tables
+
+### All 3 Common Features
+
+> Features commonly identified between scoary, RF classification model and RF regression model
+
+```{r}
+# Read in Gene Headers
+ips.common.all.headers <- read.table("./data/bcw-lactococcus-only/ips-results/common_important_genes_34-headers.txt",
+                                   col.names = c("Feature",
+                                                 "Roary.Annotation"),
+                                   sep = " ")
+
+# add annotation description from roary/prokka
+ips.common.all.headers$Roary.description <- scoary_genes$Annotation[match(ips.common.all.headers$Roary.Annotation,
+                                                                                 scoary_genes$Gene)]
+
+str(ips.common.all.headers)
+
+# Read in IPS Table
+ips.common.all <- read_tsv("./data/bcw-lactococcus-only/ips-results/common_important_genes_34.fa.tsv",
+                           col_names = c("Feature",
+                                         "MD5 digest",
+                                         "Seq.Length",
+                                         "Analysis",
+                                         "Sig.Accession",
+                                         "Sig.Description",
+                                         "Start.Pos",
+                                         "Stop.Pos",
+                                         "Score",
+                                         "Status",
+                                         "Date",
+                                         "InterPro.Accession",
+                                         "InterPro.Description",
+                                         "GO.Annotations"),
+                           col_types = "ccnfccnnnfcfcc",
+                           na = c("", "-"))
+
+# trim tail of ips accession to match input header ids
+ips.common.all$Feature <- as.factor(substr(ips.common.all$Feature, 0, 16))
+
+# Number of Features with annotations
+unique(ips.common.all$Feature)
+
+# Add Roary Annotation
+ips.common.all$Roary.Annotation <- ips.common.all.headers$Roary.Annotation[match(ips.common.all$Feature,
+                                                                                 ips.common.all.headers$Feature)]
+
+# create DF for Table 1 in Manuscript
+table1 <- ips.common.all.headers
+write_csv(table1, "./output_tables/Table1.csv", col_names = T)
+
+```
+
+### RFC & PGWAS - common Features
+
+> Features commonly identified between the RF classification and RF regression model
+
+```{r}
+# Read in Gene Headers
+ips.common.RFC.PGWAS.headers <- read.table("./data/bcw-lactococcus-only/ips-results/common_RFC.pgwas_77-headers.txt",
+                                   col.names = c("Feature",
+                                                 "Roary.Annotation"),
+                                   sep = " ")
+
+# add annotation description from roary/prokka
+ips.common.RFC.PGWAS.headers$Roary.description <- scoary_genes$Annotation[match(ips.common.RFC.PGWAS.headers$Roary.Annotation,
+                                                                                 scoary_genes$Gene)]
+str(ips.common.all.headers)
+
+# Read in IPS Table
+ips.common.RFC.PGWAS <- read_tsv("./data/bcw-lactococcus-only/ips-results/common_RFC.pgwas_77.fa.tsv",
+                           col_names = c("Feature",
+                                         "MD5 digest",
+                                         "Seq.Length",
+                                         "Analysis",
+                                         "Sig.Accession",
+                                         "Sig.Description",
+                                         "Start.Pos",
+                                         "Stop.Pos",
+                                         "Score",
+                                         "Status",
+                                         "Date",
+                                         "InterPro.Accession",
+                                         "InterPro.Description",
+                                         "GO.Annotations"),
+                           col_types = "ccnfccnnnfcfcc",
+                           na = c("", "-"))
+
+# trim tail of ips accession to match input header ids
+ips.common.RFC.PGWAS$Feature <- as.factor(substr(ips.common.RFC.PGWAS$Feature, 0, 16))
+
+# Number of Features with annotations
+unique(ips.common.RFC.PGWAS$Feature)
+
+# add gene annotation id
+ips.common.RFC.PGWAS$Roary.Annotation <- ips.common.RFC.PGWAS.headers$Roary.Annotation[match(ips.common.RFC.PGWAS$Feature,
+                                                                                 ips.common.RFC.PGWAS.headers$Feature)]
+
+
+# create DF for Table S7 in Manuscript
+RFC.PGWAS_common_table <- ips.common.RFC.PGWAS.headers
+write_csv(RFC.PGWAS_common_table, "./output_tables/RFC.PGWAS_common_table.csv", col_names = T)
+
+```
+
+### RFR & PGWAS - common Features
+
+> Features commonly identified between the RF classification and RF regression model
+
+```{r}
+# Read in Gene Headers
+ips.common.RFR.PGWAS.headers <- read.table("./data/bcw-lactococcus-only/ips-results/common_RFR.pgwas_6-headers.txt",
+                                   col.names = c("Feature",
+                                                 "Roary.Annotation"),
+                                   sep = " ")
+
+# add annotation description from roary/prokka
+ips.common.RFR.PGWAS.headers$Roary.description <- scoary_genes$Annotation[match(ips.common.RFR.PGWAS.headers$Roary.Annotation,
+                                                                                 scoary_genes$Gene)]
+
+str(ips.common.RFR.PGWAS.headers)
+
+# Read in IPS Table
+ips.common.RFR.PGWAS <- read_tsv("./data/bcw-lactococcus-only/ips-results/common_RFR.pgwas_6.fa.tsv",
+                           col_names = c("Feature",
+                                         "MD5 digest",
+                                         "Seq.Length",
+                                         "Analysis",
+                                         "Sig.Accession",
+                                         "Sig.Description",
+                                         "Start.Pos",
+                                         "Stop.Pos",
+                                         "Score",
+                                         "Status",
+                                         "Date",
+                                         "InterPro.Accession",
+                                         "InterPro.Description",
+                                         "GO.Annotations"),
+                           col_types = "ccnfccnnnfcfcc",
+                           na = c("", "-"))
+
+# trim tail of ips accession to match input header ids
+ips.common.RFR.PGWAS$Feature <- as.factor(substr(ips.common.RFR.PGWAS$Feature, 0, 16))
+
+# Number of Features with annotations
+unique(ips.common.RFR.PGWAS$Feature)
+
+ips.common.RFR.PGWAS$Roary.Annotation <- ips.common.RFR.PGWAS.headers$Roary.Annotation[match(ips.common.RFR.PGWAS$Feature,
+                                                                                 ips.common.RFR.PGWAS.headers$Feature)]
+
+# create DF for Table 1 in Manuscript
+RFR.PGWAS_common_table <- ips.common.RFR.PGWAS.headers
+write_csv(RFR.PGWAS_common_table, "./output_tables/RFR.PGWAS_common_table.csv", col_names = T)
+
+```
+
+### RF models - common Features
+
+> Features commonly identified between the RF classification and RF regression model
+
+```{r}
+# Read in Gene Headers
+ips.common.RF.headers <- read.table("./data/bcw-lactococcus-only/ips-results/RF_common_genes_18-headers.txt",
+                                   col.names = c("Feature",
+                                                 "Roary.Annotation"),
+                                   sep = " ")
+
+# add annotation description from roary/prokka
+ips.common.RF.headers$Roary.description <- scoary_genes$Annotation[match(ips.common.RF.headers$Roary.Annotation,
+                                                                                 scoary_genes$Gene)]
+
+str(ips.common.all.headers)
+
+# Read in IPS Table
+ips.common.RF <- read_tsv("./data/bcw-lactococcus-only/ips-results/RF_common_genes_18.fa.tsv",
+                           col_names = c("Feature",
+                                         "MD5 digest",
+                                         "Seq.Length",
+                                         "Analysis",
+                                         "Sig.Accession",
+                                         "Sig.Description",
+                                         "Start.Pos",
+                                         "Stop.Pos",
+                                         "Score",
+                                         "Status",
+                                         "Date",
+                                         "InterPro.Accession",
+                                         "InterPro.Description",
+                                         "GO.Annotations"),
+                           col_types = "ccnfccnnnfcfcc",
+                           na = c("", "-"))
+
+# trim tail of ips accession to match input header ids
+ips.common.RF$Feature <- as.factor(substr(ips.common.RF$Feature, 0, 16))
+
+# Number of Features with annotations
+unique(ips.common.RF$Feature)
+
+ips.common.RF$Roary.Annotation <- ips.common.RF.headers$Roary.Annotation[match(ips.common.RF$Feature,
+                                                                                 ips.common.RF.headers$Feature)]
+
+# create DF for Table 1 in Manuscript
+RF_common_table <- ips.common.RF.headers
+write_csv(RF_common_table, "./output_tables/RF_common_table.csv", col_names = T)
+
+```
+
+
+## S6 Table
+
+> Interproscan tables were used to construct S6 Table outside of R. S6 Table was imported to compute summary analysis of annotated features. S6 table contains genes from lists generated above that include `table1`, `RFC.PGWAS_common_table`, `RFR.PGWAS_common_table`, and `RF_common_table`.
+
+```{r}
+S6_table <- read.csv("./output_tables/S6_Table.csv", header = T)
+
+# Group by prokka annotations to count HPs
+S6_table %>% group_by(Prokka.Annotation) %>% count()
+
+# Group by arbitrarily assigned Class to tally inferences from Interproscan
+S6_table %>% group_by(Class) %>% count()
+
+# Group by Class, select only genes identified by all 3 computational approaches
+S6_table.all3 <- S6_table %>% filter(Pan.GWAS == "+" &
+                      RFC == "+" &
+                      RFR == "+") %>%
+  group_by(Class) %>%
+  count()
+
+S6_table.all3
+
+# Group by Class, select all other 101 genes
+S6.table.101 <- S6_table %>% filter(!PanGenome.Reference %in% ips.common.all.headers$Feature)
+
+# Filter to select absent genes
+S6.Table.101.absent <- S6.table.101 %>%
+  filter(Mucilage.Isolate.State == "-")
+
+S6.Table.101.absent %>%
+  group_by(Class) %>%
+  count()
+
+# Filter to select present genes
+S6.table.101.present<- S6.table.101 %>%
+  filter(Mucilage.Isolate.State == "+")
+
+S6.table.101.present %>%
+  group_by(Class) %>%
+  count()
+```
+
+
+
+============================
+
+> Venn Diagram of RF and Scoary Hits
+
+require(Vennerable)
+
+> make list of important genes identified by all three methods
+imp_genes_list <- list("RF Classification" = RF_classify_cmp$features, "RF Regression" = RF_regress_cmp$features, "Pan-GWAS" = scoary_cmp$features)
+
+str(imp_genes_list)
+
+> Make Venn
+Venn_imp_genes <- Venn(imp_genes_list)
+Venn_imp_genes
+
+> Plot with Weighted values
+Venn_imp_genes_plot_wt <- plot(Venn_imp_genes, doWeights = FALSE)
+
+tiff("./plots/Important_gene_Venn_no_wt.tiff", width = 2250, height = 2250, units = "px", res = 300, compression = "lzw")
+plot(Venn_imp_genes, doWeights = FALSE)
+dev.off()
+
+> Plot without Weighted values
+Venn_imp_genes_plot <- plot(Venn_imp_genes)
+
+==================================
+
+### SRA Submission metadata
+
+```{r}
+library(tidyverse)
+strain.labels <- read.csv("../../Tables/strain-labels.csv", header = T)
+head(strain.labels)
+
+strain.labels$ssp <- paste0("Lactococcus lactis subsp. ", strain.labels$ssp)
+
+new.labels <- strain.labels %>%
+  unite("new.strain", strain:bcw, sep = "-", remove = FALSE) %>%
+  unite("label", c("ssp","new.strain"), sep = " ", remove = FALSE)
+
+View(new.labels)
+
+write.csv(new.labels, "../../Tables/new-strain-labels.csv", col.names = T)
+```
+
